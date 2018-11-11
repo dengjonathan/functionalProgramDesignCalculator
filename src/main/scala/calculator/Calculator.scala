@@ -19,12 +19,14 @@ object Calculator {
       case Literal(v) => v
       case Ref(name) => {
         val expr = getReferenceExpr(name, references)
-        eval(expr, references)
+        // no circular reference
+        eval(expr, references.filterKeys(_ != name))
       }
       case Plus(a, b) => eval(a, references) + eval(b, references)
       case Minus(a, b) => eval(a, references) - eval(b, references)
       case Times(a, b) => eval(a, references) * eval(b, references)
       case Divide(a, b) => eval(a, references) / eval(b, references)
+      case _ => Double.NaN
     }
   }
 
